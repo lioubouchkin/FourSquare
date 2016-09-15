@@ -1,5 +1,6 @@
 package fr.intech.foursquare;
 
+import android.os.AsyncTask;
 import android.os.Message;
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -205,4 +206,5 @@ public class FourSquareSearch {
     public String getQuery() {
         return query;
     }
+
 }

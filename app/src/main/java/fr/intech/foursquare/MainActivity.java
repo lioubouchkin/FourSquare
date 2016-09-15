@@ -88,20 +88,25 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(LOG_TAG, "mLastLocation is null");
         }
 
-        FourSquareSearch search = new FourSquareSearch("40.7", "74");
-        search.buildQuery();
-        search.readURL();
+//        new Thread(new Runnable() {
+//            public void run() {
+//                FourSquareSearch search = new FourSquareSearch("40.7", "74");
+//                search.buildQuery();
+//                search.readURL();
+//
+//                BufferedReader in = search.getIn();
+//                String line;
+//
+//                try {
+//                    while ((line = in.readLine()) != null) {
+//                        Log.d("JSonParser : ", line);
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
 
-        BufferedReader in = search.getIn();
-        String line;
-
-        try {
-            while ((line = in.readLine()) != null) {
-                Log.d("JSonParser : ", line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -120,20 +125,24 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Callback for the result from requesting permissions.</b>
-     * This method is invoked for every call on @ requestPermissions
+     * Callback for the result from requesting permissions.
+     * This method is invoked for every call on requestPermissions
      * @param requestCode
      * @param permissions
      * @param grantResults
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(LOG_TAG, " entered onRequestPermissionsResult()");
         switch (requestCode) {
             case REQUEST_PERMISSION_PHONE_STATE:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(MainActivity.this, "Permission Granted!", Toast.LENGTH_SHORT).show();
+                    this.mGoogleApiClient.connect();
 
+                    Log.d(LOG_TAG,
+                            "onRequestPermissionsResult() :\n"+"Connection established - " + this.mGoogleApiClient.isConnected());
                 } else {
                     Toast.makeText(MainActivity.this, "Permission Denied!", Toast.LENGTH_SHORT).show();
                 }
@@ -141,9 +150,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * method alerts the user of needed permission by
+     * method alerts the user of a permission to attribute
      */
     private void showPhoneStatePermission() {
+        Log.d(LOG_TAG, " entered showPhoneStatePermission()");
         int permissionCheck = ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
@@ -169,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements
                                  String message,
                                  final String permission,
                                  final int permissionRequestCode) {
+        Log.d(LOG_TAG, " entered showExplanation()");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setMessage(message)
@@ -181,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void requestPermission(String permissionName, int permissionRequestCode) {
+        Log.d(LOG_TAG, " entered requestPermission()");
         ActivityCompat.requestPermissions(this,
                 new String[]{permissionName}, permissionRequestCode);
     }
